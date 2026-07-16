@@ -1,0 +1,28 @@
+[project]
+name = "ariadne-docs"
+version = "0.1.0"
+description = "Retrieval core + open documentation MCP server for Project Ariadne"
+readme = "README.md"
+requires-python = ">=3.10"
+# Slice 1 (the retrieval core's structure-aware chunker + exact-lookup index)
+# is deliberately pure-stdlib — no heavy deps on the open/"keep-it-simple" bar.
+dependencies = []
+
+[project.optional-dependencies]
+# Slice 2 — semantic search substrate. Provider TBD; kept out of core so the
+# deterministic exact-lookup path never depends on an embedding backend.
+embeddings = []
+# Slice 3 — the open MCP transport (FastMCP), following the research-mcp-server
+# pattern. The core itself never imports `mcp`; transports are thin adapters.
+mcp = ["mcp>=1.0.0", "python-dotenv>=1.0.0"]
+dev = ["pytest>=7.0.0"]
+
+[project.scripts]
+ariadne-docs-build = "ariadne_docs.scripts_entry:build_open_index"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ariadne_docs"]

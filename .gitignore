@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.env
+# Built indexes / vendored corpora — regenerated from source docs.
+/index_cache/
+/corpora_cache/
