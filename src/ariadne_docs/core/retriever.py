@@ -6,37 +6,27 @@ shape now.
 """
 from __future__ import annotations
 
-import re
-
 from .corpus import CorpusSpec
 from .chunker import chunk_corpus
 from .index import DocIndex, vector_family
 from .models import AnchorKind, Chunk, Result
-
-_TOKEN_RE = re.compile(r"[a-z0-9][a-z0-9\-]*")
-_STOPWORDS = {
-    "the", "a", "an", "of", "to", "and", "or", "is", "are", "in", "on", "for",
-    "by", "as", "at", "be", "it", "that", "this", "with", "from", "how", "what",
-    "does", "do", "which", "must",
-}
-
-
-def _tokenize(text: str) -> list[str]:
-    return [t for t in _TOKEN_RE.findall(text.lower()) if t not in _STOPWORDS and len(t) > 1]
+from .text import tokenize as _tokenize
 
 
 class Retriever:
     """Corpus-agnostic retrieval facade over a built ``DocIndex``."""
 
-    def __init__(self, index: DocIndex, corpus_name: str = ""):
+    def __init__(self, index: DocIndex, corpus_name: str = "", embedder=None):
         self.index = index
         self.corpus_name = corpus_name
+        self._embedder = embedder   # None => default TF-IDF, built lazily
+        self._store = None
 
     @classmethod
-    def from_spec(cls, spec: CorpusSpec) -> "Retriever":
+    def from_spec(cls, spec: CorpusSpec, embedder=None) -> "Retriever":
         documents = spec.load()
         chunks = chunk_corpus(documents)
-        return cls(DocIndex(chunks), corpus_name=spec.name)
+        return cls(DocIndex(chunks), corpus_name=spec.name, embedder=embedder)
 
     # -- exact lookups (deterministic) -----------------------------------
     def get_governance_rule(self, rule_id: str) -> list[Result]:
@@ -58,12 +48,51 @@ class Retriever:
         chunks = sorted(chunks, key=lambda c: (c.doc_id != "SPEC", c.doc_id))
         return _results(chunks)
 
-    # -- semantic search (slice 2 seam) ----------------------------------
-    def search(self, query: str, k: int = 5) -> list[Result]:
-        raise NotImplementedError(
-            "Semantic search lands in slice 2 (embeddings + vector store). "
-            "Use search_lexical() until then."
-        )
+    # -- vector search ---------------------------------------------------
+    @property
+    def embedder_name(self) -> str:
+        return self._embedder.name if self._embedder is not None else "tfidf-local"
+
+    def _ensure_semantic(self) -> None:
+        if self._store is not None:
+            return
+        from .embeddings import TfidfEmbedder
+        from .store import InMemoryVectorStore
+
+        texts = [c.text for c in self.index.chunks]
+        if self._embedder is None:
+            self._embedder = TfidfEmbedder().fit(texts)
+        vectors = self._embedder.embed(texts)
+        store = InMemoryVectorStore(dim=self._embedder.dim)
+        store.add([str(i) for i in range(len(texts))], vectors, list(range(len(texts))))
+        self._store = store
+
+    def search(
+        self,
+        query: str,
+        k: int = 5,
+        kinds: tuple[AnchorKind, ...] | None = None,
+        must_contain: tuple[str, ...] = (),
+    ) -> list[Result]:
+        """Vector search over the corpus (cosine). Default embedder is a local,
+        offline TF-IDF model; inject a neural/API ``Embedder`` via ``from_spec``
+        for true semantic ranking. ``kinds`` / ``must_contain`` post-filter the
+        ranked hits (the store is over-queried so k results survive filtering)."""
+        self._ensure_semantic()
+        query_vec = self._embedder.embed([query])[0]
+        fetch = k * 5 if (kinds or must_contain) else k
+        hits = self._store.search(query_vec, k=fetch)
+        results: list[Result] = []
+        for _id, score, payload in hits:
+            chunk = self.index.chunks[payload]
+            if kinds and chunk.primary.kind not in kinds:
+                continue
+            if any(sub not in chunk.text.lower() for sub in must_contain):
+                continue
+            results.append(Result(chunk=chunk, score=score))
+            if len(results) >= k:
+                break
+        return results
 
     def search_lexical(
         self,

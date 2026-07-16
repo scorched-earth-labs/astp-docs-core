@@ -21,11 +21,12 @@ def _pack(results, extra: dict | None = None) -> dict:
 def search_spec(retriever: Retriever, query: str, k: int = 5) -> dict:
     """Search the protocol corpus for the passage(s) most relevant to a query.
 
-    NOTE: lexical (term-overlap) search until slice 2 wires semantic embeddings;
-    the ``search_method`` field reports which is in effect.
+    Vector search (cosine). The ``search_method`` field reports the active
+    embedder — "tfidf-local" by default (offline), or a neural/API embedder if
+    the deployment injected one.
     """
-    results = retriever.search_lexical(query, k=k)
-    return _pack(results, {"query": query, "search_method": "lexical"})
+    results = retriever.search(query, k=k)
+    return _pack(results, {"query": query, "search_method": retriever.embedder_name})
 
 
 def get_governance_rule(retriever: Retriever, rule_id: str) -> dict:
@@ -54,20 +55,19 @@ def get_hash_preimage(retriever: Retriever, type_name: str, k: int = 5) -> dict:
     "WorkflowDeclaration", "EpisodeLink", "leaf hash"). Returns the passages
     that describe what fields the hash binds and in what order.
 
-    Best-effort (lexical, filtered to hash-describing passages) until slice 2;
-    for canonical field-order guarantees also consult the matching conformance
-    vector via get_conformance_vectors.
+    Ranks hash-describing passages by relevance to the type name; for the
+    canonical field-order guarantee also consult the matching conformance vector
+    via get_conformance_vectors.
     """
-    # Restrict to passages that actually describe a hash preimage, then rank by
-    # the type name. Sections carry the preimage prose; vectors carry the
-    # canonical field order.
-    results = retriever.search_lexical(
+    # Restrict to passages that actually describe a hash, then rank by the type
+    # name. Sections carry the preimage prose; vectors carry the field order.
+    results = retriever.search(
         type_name,
         k=k,
         kinds=(AnchorKind.SECTION, AnchorKind.CONFORMANCE_VECTOR),
         must_contain=("hash",),
     )
-    return _pack(results, {"type_name": type_name, "search_method": "lexical"})
+    return _pack(results, {"type_name": type_name, "search_method": retriever.embedder_name})
 
 
 def corpus_info(retriever: Retriever) -> dict:

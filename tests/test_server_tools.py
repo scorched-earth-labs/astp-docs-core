@@ -26,9 +26,10 @@ def r():
 
 def test_search_spec_returns_hits(r):
     out = tools.search_spec(r, "position-binding leaf hash preimage", k=5)
-    assert out["search_method"] == "lexical"
+    assert out["search_method"] == "tfidf-local"   # default offline embedder
     assert out["count"] > 0
     assert all("citation" in hit for hit in out["results"])
+    assert all(hit["score"] is not None for hit in out["results"])
 
 
 def test_get_governance_rule_tool(r):

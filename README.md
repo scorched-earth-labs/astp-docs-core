@@ -62,9 +62,14 @@ deterministic, not fuzzy:
   Tool logic is pure functions in `server/tools.py` (testable without `mcp`);
   the FastMCP layer is a thin wrapper. Verified end-to-end via `call_tool`.
   `search_spec` is **lexical** until slice 2 (`search_method` reports which).
-- **Slice 2 — semantic search:** embeddings + vector store behind
-  `Retriever.search()` (the seam is already declared; `search_lexical()` is the
-  stopgap). Simple/local backend for the open bar; QDrant for enterprise.
+- **Slice 2 — vector search: DONE.** Pluggable `Embedder` + `VectorStore`
+  behind `Retriever.search()`. Default is `TfidfEmbedder` + `InMemoryVectorStore`
+  — **offline, keyless, deterministic** (numpy only); a neural/API embedder
+  (`OpenAIEmbedder`, or any `Embedder`) drops in via `from_spec(embedder=…)`.
+  `search_spec` / `get_hash_preimage` now rank by cosine; `search_method`
+  reports the active embedder. `search_lexical()` remains as a fallback.
+  Enterprise `QdrantVectorStore` is deferred until there's a live Qdrant to
+  verify against.
 - **Slice 4 — open web-chat head** (Clotho-lite) and a checked-in
   `llms.txt` / `AGENTS.md` pointer.
 

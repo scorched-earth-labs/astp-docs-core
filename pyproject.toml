@@ -9,9 +9,12 @@ requires-python = ">=3.10"
 dependencies = []
 
 [project.optional-dependencies]
-# Slice 2 — semantic search substrate. Provider TBD; kept out of core so the
-# deterministic exact-lookup path never depends on an embedding backend.
-embeddings = []
+# Vector search. numpy powers the default offline TF-IDF embedder + in-memory
+# store; kept out of core so the deterministic exact-lookup path never needs it.
+# Neural/API embedding (openai) and the enterprise Qdrant store are further opt-ins.
+embeddings = ["numpy>=1.24"]
+openai = ["openai>=1.0"]
+qdrant = ["qdrant-client>=1.7"]
 # Slice 3 — the open MCP transport (FastMCP), following the research-mcp-server
 # pattern. The core itself never imports `mcp`; transports are thin adapters.
 mcp = ["mcp>=1.0.0", "python-dotenv>=1.0.0"]
