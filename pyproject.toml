@@ -18,7 +18,7 @@ mcp = ["mcp>=1.0.0", "python-dotenv>=1.0.0"]
 dev = ["pytest>=7.0.0"]
 
 [project.scripts]
-ariadne-docs-build = "ariadne_docs.scripts_entry:build_open_index"
+ariadne-docs-open = "ariadne_docs.server:run"
 
 [build-system]
 requires = ["hatchling"]

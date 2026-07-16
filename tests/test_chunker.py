@@ -118,3 +118,15 @@ def test_citations_have_line_numbers():
     assert cit.doc_id == "SPEC"
     assert cit.start_line <= cit.end_line
     assert str(cit).startswith("SPEC G-30")
+
+
+def test_lexical_search_ranks_and_scores():
+    r = _retriever()
+    hits = r.search_lexical("fork objective alternatives", k=5)
+    assert hits and hits[0].score is not None
+    # the fork rules chunk should surface for this query
+    joined = " ".join(h.chunk.text for h in hits).lower()
+    assert "fork" in joined
+    # an exact anchor id query still resolves via the id boost
+    top = r.search_lexical("WF-004", k=1)
+    assert top and top[0].chunk.primary.id == "WF-004"

@@ -55,12 +55,16 @@ deterministic, not fuzzy:
   structure-aware chunker, exact-lookup index, `Retriever`. Verified against
   the live `ariadne-protocol` corpus: 13 docs, ~700 chunks, governance
   **contiguous G-1…G-36**, 124 conformance vectors across 20 families.
+- **Slice 3 — open MCP transport: DONE.** FastMCP server
+  (`ariadne_docs.server`) exposing `search_spec`, `get_governance_rule`,
+  `get_conformance_vectors`, `get_section`, `get_hash_preimage`, `corpus_info`,
+  following the `research-mcp-server` pattern + an Atlas manifest (all read).
+  Tool logic is pure functions in `server/tools.py` (testable without `mcp`);
+  the FastMCP layer is a thin wrapper. Verified end-to-end via `call_tool`.
+  `search_spec` is **lexical** until slice 2 (`search_method` reports which).
 - **Slice 2 — semantic search:** embeddings + vector store behind
-  `Retriever.search()` (the seam is already declared). Simple/local backend for
-  the open bar; QDrant for enterprise.
-- **Slice 3 — open MCP transport:** FastMCP server (`search_spec`,
-  `get_governance_rule`, `get_conformance_vectors`, `get_hash_preimage`,
-  `get_section`) following the `research-mcp-server` pattern + `atlas_manifest`.
+  `Retriever.search()` (the seam is already declared; `search_lexical()` is the
+  stopgap). Simple/local backend for the open bar; QDrant for enterprise.
 - **Slice 4 — open web-chat head** (Clotho-lite) and a checked-in
   `llms.txt` / `AGENTS.md` pointer.
 
@@ -73,4 +77,10 @@ export ARIADNE_PROTOCOL_DIR=~/projects/ariadne-protocol
 PYTHONPATH=src python3 scripts/build_open_index.py   # build + sample lookups
 PYTHONPATH=src python3 -m pytest tests/ -q            # tests (integration ones
                                                      # skip if the repo is absent)
+
+# Run the open MCP server (needs the `mcp` extra: pip install -e '.[mcp]'):
+python -m ariadne_docs.server                        # stdio transport
 ```
+
+The core is pure-stdlib; only the MCP transport needs `mcp`. `search_spec` and
+`get_hash_preimage` are lexical until slice 2 adds embeddings.
