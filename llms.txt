@@ -1,0 +1,36 @@
+# Project Ariadne — Documentation
+
+> Ariadne is an open protocol for **cognitive persistence** and **verifiable
+> cognition** in multi-agent systems: it records that an agent reasoned, what
+> state resulted, and makes that record cryptographically verifiable and
+> re-interpretable. Bring your own cognitive architecture.
+
+Most Ariadne implementations are done by AI coding agents. This file, the
+companion AGENTS.md, and the Ariadne Docs MCP server exist so those agents
+implement the protocol from its normative text instead of guessing (which
+produces non-conforming adapters).
+
+## Implementing the protocol
+
+- Prefer the **Ariadne Docs MCP server** for exact lookups — it returns
+  governance rules, conformance vectors, sections, and hash preimages verbatim
+  with citations: `search_spec`, `get_governance_rule` (G-1..G-36),
+  `get_conformance_vectors` (e.g. WF-004 or a family like WF), `get_section`,
+  `get_hash_preimage`, `corpus_info`.
+- Hash preimages, field order, and governance rules are **normative and exact**
+  — read them, do not infer them. A wrong field set or order produces a
+  different content hash and a non-conforming implementation.
+
+## Normative documents (open corpus)
+
+- SPEC.md — the canonical protocol specification (§1–§22; governance G-1..G-36)
+- IMPLEMENTATION-BFM.md / CONFORMANCE-BFM.md — branch/fork/merge
+- IMPLEMENTATION-CROSS-EPISODE-LINKING.md / CONFORMANCE-CROSS-EPISODE-LINKING.md — §20
+- IMPLEMENTATION-LAYER3.md / CONFORMANCE-LAYER3.md — §21 Workflow & Execution DAG
+- IMPLEMENTATION-PHASE3.md / CONFORMANCE.md — Phase 3 (witnesses, proof chains)
+- GLOSSARY.md, CHANGELOG.md, VERSIONING.md
+
+## Optional
+
+- A public web assistant (Clotho-lite) answers questions grounded in these same
+  documents, citing the same passages the MCP server returns.

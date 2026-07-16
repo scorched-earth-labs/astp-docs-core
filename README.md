@@ -70,8 +70,14 @@ deterministic, not fuzzy:
   reports the active embedder. `search_lexical()` remains as a fallback.
   Enterprise `QdrantVectorStore` is deferred until there's a live Qdrant to
   verify against.
-- **Slice 4 — open web-chat head** (Clotho-lite) and a checked-in
-  `llms.txt` / `AGENTS.md` pointer.
+- **Slice 4 — open web-chat head: DONE.** A FastAPI transport (`ariadne_docs.web`)
+  over the same core — `POST /chat` (doc-grounded, cited answers), `GET /search`
+  (pure retrieval), `GET /healthz`, and a reference demo page. Generation is a
+  pluggable `Answerer`: **`ClaudeAnswerer`** (Anthropic, Opus 4.8 default,
+  adaptive thinking, refusal-handled) with a **keyless `ExtractiveAnswerer`**
+  fallback so the endpoint runs and tests without credentials. Both heads cite
+  the *same* chunks the MCP server returns. Checked-in `llms.txt` / `AGENTS.md`
+  point coding agents at the corpus + MCP tools. Verified end-to-end over HTTP.
 
 ## Develop
 
@@ -85,7 +91,16 @@ PYTHONPATH=src python3 -m pytest tests/ -q            # tests (integration ones
 
 # Run the open MCP server (needs the `mcp` extra: pip install -e '.[mcp]'):
 python -m ariadne_docs.server                        # stdio transport
+
+# Run the open web-chat head (needs the `web` extra: pip install -e '.[web]'):
+python -m ariadne_docs.web                            # http://127.0.0.1:8080
+ARIADNE_CHAT_MODE=extractive python -m ariadne_docs.web   # keyless (no LLM)
 ```
+
+The web head uses Claude for answers by default (`ANTHROPIC_API_KEY` or an
+`ant auth login` profile; model via `ARIADNE_CHAT_MODEL`, default
+`claude-opus-4-8`). Set `ARIADNE_CHAT_MODE=extractive` to run without an LLM, and
+`ARIADNE_CORS_ORIGINS` to lock down CORS for a real deployment.
 
 The core is pure-stdlib; only the MCP transport needs `mcp`. `search_spec` and
 `get_hash_preimage` are lexical until slice 2 adds embeddings.

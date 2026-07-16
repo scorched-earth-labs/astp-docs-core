@@ -15,13 +15,17 @@ dependencies = []
 embeddings = ["numpy>=1.24"]
 openai = ["openai>=1.0"]
 qdrant = ["qdrant-client>=1.7"]
-# Slice 3 — the open MCP transport (FastMCP), following the research-mcp-server
-# pattern. The core itself never imports `mcp`; transports are thin adapters.
+# The open MCP transport (FastMCP), following the research-mcp-server pattern.
+# The core itself never imports `mcp`; transports are thin adapters.
 mcp = ["mcp>=1.0.0", "python-dotenv>=1.0.0"]
-dev = ["pytest>=7.0.0"]
+# The open web-chat head (Clotho-lite). `anthropic` powers the default Claude
+# generator; the endpoint also runs keyless via the extractive fallback.
+web = ["fastapi>=0.110", "uvicorn>=0.27", "anthropic>=0.40"]
+dev = ["pytest>=7.0.0", "httpx>=0.27"]
 
 [project.scripts]
 ariadne-docs-open = "ariadne_docs.server:run"
+ariadne-docs-web = "ariadne_docs.web:main"
 
 [build-system]
 requires = ["hatchling"]
