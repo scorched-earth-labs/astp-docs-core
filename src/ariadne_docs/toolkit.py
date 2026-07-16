@@ -1,14 +1,14 @@
-"""Pure tool logic for the documentation MCP servers.
+"""Shared documentation-tool logic — part of the core library.
 
 Every function takes a ``Retriever`` and returns a JSON-serializable dict, so
-the tools are fully testable without the ``mcp`` package. The FastMCP layer
-(``open_server``) is a thin wrapper that binds these to a corpus and decorates
-them with ``@mcp.tool()``. The same functions back the enterprise server.
+the tools are fully testable without any transport dependency. Both the open
+MCP server and the enterprise server import these and bind them to their own
+corpus; each transport (FastMCP, HTTP) is a thin wrapper on top.
 """
 from __future__ import annotations
 
-from ..core import AnchorKind
-from ..core.retriever import Retriever
+from .core import AnchorKind
+from .core.retriever import Retriever
 
 
 def _pack(results, extra: dict | None = None) -> dict:

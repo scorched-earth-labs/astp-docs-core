@@ -1,31 +1,18 @@
 [project]
 name = "ariadne-docs"
-version = "0.1.0"
-description = "Retrieval core + open documentation MCP server for Project Ariadne"
+version = "0.2.0"
+description = "Retrieval core library for Project Ariadne's documentation servers — structure-aware chunker, exact-lookup index, pluggable vector search, and shared tool logic. Consumed by the open and enterprise MCP/web servers."
 readme = "README.md"
 requires-python = ">=3.10"
-# Slice 1 (the retrieval core's structure-aware chunker + exact-lookup index)
-# is deliberately pure-stdlib — no heavy deps on the open/"keep-it-simple" bar.
+# Exact-lookup + the chunker/index are pure-stdlib. Vector search needs numpy.
 dependencies = []
 
 [project.optional-dependencies]
-# Vector search. numpy powers the default offline TF-IDF embedder + in-memory
-# store; kept out of core so the deterministic exact-lookup path never needs it.
-# Neural/API embedding (openai) and the enterprise Qdrant store are further opt-ins.
+# Vector search: the default offline TF-IDF embedder + in-memory store.
 embeddings = ["numpy>=1.24"]
+# Optional neural embedding for deployments that opt in.
 openai = ["openai>=1.0"]
-qdrant = ["qdrant-client>=1.7"]
-# The open MCP transport (FastMCP), following the research-mcp-server pattern.
-# The core itself never imports `mcp`; transports are thin adapters.
-mcp = ["mcp>=1.0.0", "python-dotenv>=1.0.0"]
-# The open web-chat head (Clotho-lite). `anthropic` powers the default Claude
-# generator; the endpoint also runs keyless via the extractive fallback.
-web = ["fastapi>=0.110", "uvicorn>=0.27", "anthropic>=0.40"]
-dev = ["pytest>=7.0.0", "httpx>=0.27"]
-
-[project.scripts]
-ariadne-docs-open = "ariadne_docs.server:run"
-ariadne-docs-web = "ariadne_docs.web:main"
+dev = ["pytest>=7.0.0"]
 
 [build-system]
 requires = ["hatchling"]

@@ -75,21 +75,3 @@ def test_injected_embedder_reports_its_name():
     r = Retriever(DocIndex(chunk_corpus(CORPUS)), embedder=Dummy())
     assert r.embedder_name == "dummy-test"
     assert r.search("anything", k=1)  # store builds via the injected embedder
-
-
-# -- real corpus -----------------------------------------------------------
-try:
-    from ariadne_docs.corpora import build_open_corpus_spec
-
-    _spec = build_open_corpus_spec()
-except FileNotFoundError:
-    _spec = None
-
-
-@pytest.mark.skipif(_spec is None, reason="ariadne-protocol open docs not resolvable")
-def test_real_corpus_hash_query_surfaces_hash_material():
-    r = Retriever.from_spec(_spec)
-    hits = r.search("workflow declaration content hash field order", k=5)
-    assert hits and hits[0].score > 0
-    blob = " ".join(h.chunk.text.lower() for h in hits)
-    assert "hash" in blob and "workflow" in blob
