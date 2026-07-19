@@ -8,7 +8,7 @@ NOT neural-semantic; when a true semantic model or an API is available, drop in
 without touching the rest of the stack.
 
 numpy is imported here, not in the core exact-lookup path — so
-``from ariadne_docs.core import Retriever`` stays pure-stdlib until you call
+``from astp_docs.core import Retriever`` stays pure-stdlib until you call
 ``search()``.
 """
 from __future__ import annotations

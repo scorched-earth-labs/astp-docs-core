@@ -1,4 +1,4 @@
-"""Shared tool-logic tests (ariadne_docs.toolkit) over a synthetic corpus.
+"""Shared tool-logic tests (astp_docs.toolkit) over a synthetic corpus.
 
 The toolkit is the transport-agnostic layer both servers import; these run with
 no external corpus and no transport dependency.
@@ -7,8 +7,8 @@ import pytest
 
 pytest.importorskip("numpy")  # search_spec / get_hash_preimage use vector search
 
-from ariadne_docs import toolkit
-from ariadne_docs.core import DocIndex, Document, Retriever, chunk_corpus
+from astp_docs import toolkit
+from astp_docs.core import DocIndex, Document, Retriever, chunk_corpus
 
 SPEC = Document(
     doc_id="SPEC",

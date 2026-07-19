@@ -1,4 +1,4 @@
-"""ariadne-docs — the retrieval core library for Project Ariadne's docs servers.
+"""astp-docs — the retrieval core library for Project Ariadne's docs servers.
 
 A corpus-agnostic engine (chunker → index → retriever, with pluggable embedder /
 vector store) plus the shared, transport-agnostic tool logic (`toolkit`). The

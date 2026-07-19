@@ -1,5 +1,5 @@
 [project]
-name = "ariadne-docs"
+name = "astp-docs"
 version = "0.2.0"
 description = "Retrieval core library for Project Ariadne's documentation servers — structure-aware chunker, exact-lookup index, pluggable vector search, and shared tool logic. Consumed by the open and enterprise MCP/web servers."
 readme = "README.md"
@@ -19,4 +19,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/ariadne_docs"]
+packages = ["src/astp_docs"]

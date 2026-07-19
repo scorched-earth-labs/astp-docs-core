@@ -4,7 +4,7 @@ import pytest
 
 pytest.importorskip("numpy")
 
-from ariadne_docs.core import AnchorKind, Document, Retriever, DocIndex, chunk_corpus
+from astp_docs.core import AnchorKind, Document, Retriever, DocIndex, chunk_corpus
 
 CORPUS = [
     Document(
@@ -58,7 +58,7 @@ def test_search_kind_and_contains_filters():
 
 def test_injected_embedder_reports_its_name():
     import numpy as np
-    from ariadne_docs.core.embeddings import Embedder
+    from astp_docs.core.embeddings import Embedder
 
     class Dummy(Embedder):
         name = "dummy-test"

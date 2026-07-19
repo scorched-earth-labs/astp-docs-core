@@ -1,10 +1,10 @@
-# ariadne-docs
+# astp-docs
 
 The **retrieval core library** behind Project Ariadne's documentation servers.
 Corpus-agnostic and transport-agnostic: it turns the Ariadne doc corpus into
 exactly-citable retrieval, and the servers are thin packages on top.
 
-- **Open server** (public): [`ariadne-docs-mcp-server`](../ariadne-docs-mcp-server)
+- **Open server** (public): [`astp-docs-server`](../astp-docs-server)
   — MCP transport for coding agents + a web-chat head.
 - **Enterprise server** (private): a separate license-gated server over the
   proprietary corpus.
@@ -16,7 +16,7 @@ runtime filter.
 ## What's in here
 
 ```
-ariadne_docs/
+astp_docs/
   toolkit.py            # shared tool logic — search_spec / get_governance_rule /
                         #   get_conformance_vectors / get_section / get_hash_preimage /
                         #   corpus_info; pure functions over a Retriever, no transport dep
