@@ -64,3 +64,27 @@ def test_corpus_info(r):
     info = toolkit.corpus_info(r)
     assert info["docs"] == 2
     assert "G-1" in info["governance_rules"]
+
+
+def test_anchored_search_puts_named_anchors_first(r):
+    hits = toolkit.anchored_search(r, "what does g-1 require, and does WF-001 cover it?", k=4)
+    ids = [h.chunk.primary.id for h in hits]
+    assert ids[:2] == ["G-1", "WF-001"]
+    assert len(ids) == len(set(ids)) <= 4
+
+
+def test_anchored_search_section_and_fill(r):
+    hits = toolkit.anchored_search(r, "explain section 21 and the content hash", k=3)
+    assert hits[0].chunk.doc_id == "SPEC" and hits[0].chunk.primary.id == "21"
+    assert len(hits) == 3
+
+
+def test_anchored_search_without_anchors_is_plain_search(r):
+    assert [h.chunk.chunk_id for h in toolkit.anchored_search(r, "content hash order", k=2)] == \
+        [h.chunk.chunk_id for h in r.search("content hash order", k=2)]
+
+
+def test_anchored_search_ignores_lookalikes(r):
+    # "SHA3-256" / "UTF-8" must not be read as conformance vectors.
+    hits = toolkit.anchored_search(r, "is SHA3-256 or UTF-8 used?", k=2)
+    assert all(h.chunk.primary.kind.value != "conformance_vector" for h in hits)
