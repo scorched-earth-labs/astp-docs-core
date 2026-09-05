@@ -7,8 +7,18 @@ corpus; each transport (FastMCP, HTTP) is a thin wrapper on top.
 """
 from __future__ import annotations
 
+import re
+
 from .core import AnchorKind
+from .core.models import Result
 from .core.retriever import Retriever
+
+# Anchors a human types into a question: "G-2", "WF-001", "§5.2", "section 5.2".
+_GOV_IN_QUERY_RE = re.compile(r"\bG-(\d{1,3})\b", re.IGNORECASE)
+_VECTOR_IN_QUERY_RE = re.compile(r"\b([A-Z]{2,5}-\d{3})\b", re.IGNORECASE)
+_SECTION_IN_QUERY_RE = re.compile(
+    r"(?:§\s*|\bsections?\s+|\bsec\.?\s+)(\d+(?:\.\d+)*)\b", re.IGNORECASE
+)
 
 
 def _pack(results, extra: dict | None = None) -> dict:
@@ -27,6 +37,37 @@ def search_spec(retriever: Retriever, query: str, k: int = 5) -> dict:
     """
     results = retriever.search(query, k=k)
     return _pack(results, {"query": query, "search_method": retriever.embedder_name})
+
+
+def anchored_search(retriever: Retriever, query: str, k: int = 5) -> list[Result]:
+    """Retrieval for a free-text *question* that may name exact anchors.
+
+    Vector search alone misses the thing a spec reader most often asks for —
+    "what does G-2 require?" ranks prose about governance above the rule
+    itself. So: every anchor the question names (governance rule, conformance
+    vector, numbered section) is resolved by exact lookup first, then vector
+    search fills the remaining slots. Deduplicated by chunk, ordered exact →
+    ranked, capped at ``k``. The chat heads use this; the MCP tools stay
+    separate so an agent can still choose.
+    """
+    picked: list[Result] = []
+    seen: set[str] = set()
+
+    def take(results: list[Result]) -> None:
+        for r in results:
+            if r.chunk.chunk_id not in seen:
+                seen.add(r.chunk.chunk_id)
+                picked.append(r)
+
+    for m in _GOV_IN_QUERY_RE.finditer(query):
+        take(retriever.get_governance_rule(f"G-{int(m.group(1))}"))
+    for m in _VECTOR_IN_QUERY_RE.finditer(query):
+        take(retriever.get_conformance_vectors(m.group(1).upper()))
+    for m in _SECTION_IN_QUERY_RE.finditer(query):
+        take(retriever.get_section(m.group(1))[:1])   # SPEC's copy ranks first
+    if len(picked) < k:
+        take(retriever.search(query, k=k))
+    return picked[:k]
 
 
 def get_governance_rule(retriever: Retriever, rule_id: str) -> dict:
