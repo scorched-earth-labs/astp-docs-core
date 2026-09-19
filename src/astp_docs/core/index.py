@@ -50,8 +50,23 @@ class DocIndex:
                         self._families[fam].append(chunk)
 
     # -- exact lookups ---------------------------------------------------
+    # The same anchor can appear in several documents — a governance rule is
+    # stated in SPEC.md and quoted in CHANGELOG.md, a vector id in a conformance
+    # document and in a guide that cites it. An exact lookup returns the
+    # normative statement first: SPEC, then the CONFORMANCE documents, then the
+    # IMPLEMENTATION guides, then everything else, each group in corpus order.
+    _DOC_RANK = (("SPEC",), ("CONFORMANCE",), ("IMPLEMENTATION",))
+
+    @classmethod
+    def _doc_rank(cls, doc_id: str) -> int:
+        for i, prefixes in enumerate(cls._DOC_RANK):
+            if doc_id.upper().startswith(prefixes):
+                return i
+        return len(cls._DOC_RANK)
+
     def by_anchor(self, kind: AnchorKind, anchor_id: str) -> list[Chunk]:
-        return list(self._by_anchor.get((kind, anchor_id), []))
+        chunks = self._by_anchor.get((kind, anchor_id), [])
+        return sorted(chunks, key=lambda c: self._doc_rank(c.doc_id))   # stable: corpus order within a rank
 
     def governance_rule(self, raw_id: str) -> list[Chunk]:
         norm = normalize_governance_id(raw_id)

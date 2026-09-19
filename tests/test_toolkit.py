@@ -88,3 +88,13 @@ def test_anchored_search_ignores_lookalikes(r):
     # "SHA3-256" / "UTF-8" must not be read as conformance vectors.
     hits = toolkit.anchored_search(r, "is SHA3-256 or UTF-8 used?", k=2)
     assert all(h.chunk.primary.kind.value != "conformance_vector" for h in hits)
+
+
+def test_exact_lookup_returns_the_normative_document_first():
+    """A rule quoted in a changelog must not outrank its statement in the SPEC."""
+    from astp_docs.core import DocIndex, Document, Retriever, chunk_corpus
+    changelog = Document(doc_id="CHANGELOG", path="CHANGELOG.md", text="# Changelog\n\n## [1.1.0]\n\n- **G-2** — quoted here for the release notes.\n")
+    spec = Document(doc_id="SPEC", path="SPEC.md", text="# Spec\n\n## 6. Governance\n\n### G-2: Reparenting Prohibition\n\nparent_node_id is immutable.\n")
+    rr = Retriever(DocIndex(chunk_corpus([changelog, spec])), corpus_name="mini")
+    res = rr.get_governance_rule("G-2")
+    assert [x.chunk.doc_id for x in res] == ["SPEC", "CHANGELOG"]
