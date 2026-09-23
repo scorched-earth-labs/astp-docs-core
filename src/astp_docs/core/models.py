@@ -20,7 +20,7 @@ class AnchorKind(str, Enum):
     """
 
     SECTION = "section"                    # numbered heading, e.g. "5.2"
-    GOVERNANCE_RULE = "governance_rule"    # "G-1" .. "G-36"
+    GOVERNANCE_RULE = "governance_rule"    # "G-1" .. "G-43" (SPEC 6.0.0)
     CONFORMANCE_VECTOR = "conformance_vector"  # "WF-001", "CEL-003", ...
 
 

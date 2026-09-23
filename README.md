@@ -37,7 +37,7 @@ objects, and the chunker splits on their real boundaries so lookups are
 deterministic:
 
 - **numbered sections** — `## 6. Governance Rules`, `### 2.5.1 …`
-- **governance rules** `G-1 … G-36` — written four ways (heading, bold paragraph,
+- **governance rules** `G-1 … G-43` (as of SPEC 6.0.0) — written four ways (heading, bold paragraph,
   bullet, blockquote), all normalized to one anchor space
 - **conformance vectors** — `**WF-001** — …`, `CEL-003`, …
 

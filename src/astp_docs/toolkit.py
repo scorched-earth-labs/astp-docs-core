@@ -71,7 +71,7 @@ def anchored_search(retriever: Retriever, query: str, k: int = 5) -> list[Result
 
 
 def get_governance_rule(retriever: Retriever, rule_id: str) -> dict:
-    """Look up a governance rule (G-1 .. G-36) by id. Exact, deterministic."""
+    """Look up a governance rule (G-1 .. G-43 as of SPEC 6.0.0) by id. Exact, deterministic."""
     results = retriever.get_governance_rule(rule_id)
     return _pack(results, {"rule_id": rule_id})
 
