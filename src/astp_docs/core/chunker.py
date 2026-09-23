@@ -33,7 +33,7 @@ _VECTOR_RE = re.compile(
     r"^\*\*([A-Z]{2,5}-\d{3})\*\*\s*(?:[—–-]\s*)?(.*)$"
 )
 
-# An inline governance-rule definition. G-19..G-36 are written four ways, none
+# An inline governance-rule definition. G-19 onward (G-43 as of SPEC 6.0.0) are written four ways, none
 # of them headings: bold paragraph ("**G-22.** ..."), titled bold
 # ("**G-30 (Backdating ...).**"), bullet ("- **G-19.** ..."), and a blockquote
 # with a "Conformance" prefix ("> **Conformance G-36 (CIA Declaration).** ...").
