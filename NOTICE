@@ -1,0 +1,54 @@
+astp-docs — retrieval core for ASTP documentation servers
+Scorched Earth Labs, LLC
+
+Copyright 2026 Scorched Earth Labs, LLC.
+
+This package is the corpus-agnostic retrieval library behind the ASTP
+documentation servers: a structure-aware chunker for specification text, an
+exact-lookup index over stable anchors, pluggable vector search, and the shared
+tool logic the servers expose over their transports.
+
+The software in this package is licensed under the Apache License, Version 2.0,
+except where a particular file expressly states otherwise.
+
+The Apache License, Version 2.0, is available in the LICENSE.txt file and at:
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+
+SCOPE
+
+This package contains no protocol text. It is a retrieval engine, and the
+corpus it indexes is supplied by the server that consumes it. The ASTP
+specification, its companion documents, and the notices that accompany them
+live in the protocol repository:
+
+    https://github.com/scorched-earth-labs/astp
+
+
+PROTOCOL NAME
+
+"ASTP" and "AI State Tree Protocol" are the names of the protocol, not marks
+claimed by Scorched Earth Labs, LLC. They may be used freely to identify the
+protocol and to describe an implementation of it, in the way "HTTP" or "SFTP"
+are used. No permission is required and none is withheld.
+
+
+TRADEMARK NOTICE
+
+"SCORCHED EARTH LABS" and associated names, logos, and marks are trademarks or
+service marks of Scorched Earth Labs, LLC, where applicable.
+
+Except as expressly permitted by the Apache License, Version 2.0, nothing in
+this package grants any right to use the names, trademarks, service marks,
+logos, or other marks of Scorched Earth Labs, LLC. This paragraph applies to
+the marks of Scorched Earth Labs, LLC and not to the protocol name, which is
+addressed above.
+
+
+THIRD-PARTY MATERIALS
+
+Third-party software, documentation, data, or other materials included in or
+referenced by this package may be subject to separate license terms. Applicable
+third-party notices and license terms should be preserved in accordance with
+the applicable licenses.

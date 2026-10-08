@@ -1,4 +1,4 @@
-"""Core data model for the Ariadne docs retrieval engine.
+"""Core data model for the ASTP docs retrieval engine.
 
 These types are corpus-agnostic and transport-agnostic: the same ``Chunk`` /
 ``Anchor`` shapes back both the open and the enterprise servers, and both the
@@ -11,7 +11,7 @@ from enum import Enum
 
 
 class AnchorKind(str, Enum):
-    """The kinds of retrieval-worthy unit the Ariadne doc genre exposes.
+    """The kinds of retrieval-worthy unit the specification doc genre exposes.
 
     These are the anchors that support *exact* lookup — the answers you never
     want a fuzzy search to approximate (a governance rule, a conformance

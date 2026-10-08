@@ -1,10 +1,10 @@
 # astp-docs
 
-The **retrieval core library** behind Project Ariadne's documentation servers.
-Corpus-agnostic and transport-agnostic: it turns the Ariadne doc corpus into
+The **retrieval core library** behind the ASTP documentation servers.
+Corpus-agnostic and transport-agnostic: it turns a specification corpus into
 exactly-citable retrieval, and the servers are thin packages on top.
 
-- **Open server** (public): [`astp-docs-server`](../astp-docs-server)
+- **Open server** (public): [`astp-docs-server`](https://github.com/scorched-earth-labs/astp-docs-server)
   — MCP transport for coding agents + a web-chat head.
 - **Enterprise server** (private): a separate license-gated server over the
   proprietary corpus.
@@ -22,7 +22,7 @@ astp_docs/
                         #   corpus_info; pure functions over a Retriever, no transport dep
   core/
     corpus.py           # CorpusSpec + loader (the only thing that differs per server)
-    chunker.py          # structure-aware chunker for the Ariadne spec genre
+    chunker.py          # structure-aware chunker for the specification genre
     index.py            # exact-lookup index (sections, governance rules, conformance vectors)
     retriever.py        # query API: exact lookup + vector search
     embeddings.py       # pluggable Embedder (offline TF-IDF default; OpenAI optional)
@@ -52,5 +52,5 @@ pip install -e '.[embeddings,dev]'
 python -m pytest tests/ -q     # self-contained (synthetic corpora; no external deps)
 ```
 
-Live-corpus checks (against a real `ariadne-protocol` checkout) live in the
-server repos, since the corpus spec is a server concern.
+Live-corpus checks (against a real [`astp`](https://github.com/scorched-earth-labs/astp)
+checkout) live in the server repos, since the corpus spec is a server concern.
