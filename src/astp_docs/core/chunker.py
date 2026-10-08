@@ -1,6 +1,6 @@
-"""Structure-aware chunker for the Ariadne documentation genre.
+"""Structure-aware chunker for the specification documentation genre.
 
-The Ariadne corpus is not prose-with-headings; it is a *specification*. Its
+A specification corpus is not prose-with-headings. Its
 retrieval units are exact objects:
 
   - numbered sections   ``## 6. Governance Rules`` / ``### 2.5.1 The ...``

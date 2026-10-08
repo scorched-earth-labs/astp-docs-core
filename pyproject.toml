@@ -1,9 +1,25 @@
 [project]
 name = "astp-docs"
 version = "0.2.0"
-description = "Retrieval core library for Project Ariadne's documentation servers — structure-aware chunker, exact-lookup index, pluggable vector search, and shared tool logic. Consumed by the open and enterprise MCP/web servers."
+description = "Retrieval core for ASTP documentation servers — structure-aware chunker, exact-lookup index, pluggable vector search, and shared tool logic"
 readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE.txt", "NOTICE"]
 requires-python = ">=3.10"
+authors = [
+    { name = "Scorched Earth Labs", email = "dev@scorchedearthlabs.com" },
+]
+keywords = ["astp", "retrieval", "documentation", "chunking", "mcp", "specification"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Indexing",
+]
 # Exact-lookup + the chunker/index are pure-stdlib. Vector search needs numpy.
 dependencies = []
 
@@ -13,6 +29,12 @@ embeddings = ["numpy>=1.24"]
 # Optional neural embedding for deployments that opt in.
 openai = ["openai>=1.0"]
 dev = ["pytest>=7.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/scorched-earth-labs/astp-docs-core"
+Repository = "https://github.com/scorched-earth-labs/astp-docs-core"
+Issues = "https://github.com/scorched-earth-labs/astp-docs-core/issues"
+"ASTP protocol" = "https://github.com/scorched-earth-labs/astp"
 
 [build-system]
 requires = ["hatchling"]

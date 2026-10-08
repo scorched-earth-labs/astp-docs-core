@@ -1,7 +1,7 @@
 """Self-contained chunker/index tests over a synthetic mini-spec.
 
 These run with no external corpus — they encode the four governance-rule
-formats and the conformance-vector format the real Ariadne docs use, so a
+formats and the conformance-vector format the real protocol docs use, so a
 regression in the chunker fails here regardless of the sibling repo.
 """
 from astp_docs.core import AnchorKind, Document, Retriever, DocIndex, chunk_corpus

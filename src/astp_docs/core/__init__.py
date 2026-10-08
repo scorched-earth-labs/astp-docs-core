@@ -1,4 +1,4 @@
-"""Corpus-agnostic retrieval engine for the Ariadne documentation servers."""
+"""Corpus-agnostic retrieval engine for the ASTP documentation servers."""
 from .models import Anchor, AnchorKind, Chunk, Citation, Document, Result
 from .corpus import CorpusSpec, DocRef, Visibility, docrefs_from_dir
 from .chunker import chunk_corpus, chunk_document
